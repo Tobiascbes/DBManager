@@ -1,0 +1,53 @@
+﻿@page "/"
+@using DatabaseHandler.Data
+@using System
+@using DatabaseHandler.Models
+@inject DBConn dbConn
+@inject DBConnModel dbConnModel
+<h1>Database</h1>
+
+
+<div class="dbstring">
+    <form class="form">
+        <label for="connName">Connection string</label> <br>
+        <input type="text" id="connName" @bind="ConnectionString">
+        <input type="button" value="Submit" @onclick="@OnClickMethod">
+    </form>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>name</th>
+        </tr>
+    </thead>
+</table>
+
+
+
+@foreach (DBConnModel modelList in dbLists)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@modelList.DBName</th>
+            </tr>
+        </thead>
+    </table>
+}
+
+<p>There is no database</p>
+
+
+@code {
+    List<DBConnModel> dbLists = new();
+
+    public string ConnectionString { get; set; }
+
+    public void OnClickMethod()
+    {
+        DBConnModel.ConnectionString = ConnectionString;
+        dbLists = dbConn.Read();
+    }
+}
