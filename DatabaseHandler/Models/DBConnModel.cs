@@ -2,7 +2,12 @@
 
 public class DBConnModel
 {
-    public static string? ConnectionString { get; set; }
+    //Connection String
+    public string? ConnectionString { get; set; }
+    //Database: 
     public string? DBName { get; set; }
+    //Tables:
+    public string? TableName { get; set; }
+    public string? TableContent { get; set; }
 
 }

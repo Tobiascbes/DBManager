@@ -17,7 +17,7 @@ public class DBConn
 
     public void Create()
     {
-        using (SqlConnection connection = new SqlConnection(DBConnModel.ConnectionString))
+        using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
         {
             connection.Open();
             Console.WriteLine("Connection Opened Successfully");
@@ -39,10 +39,10 @@ public class DBConn
     {
         List<DBConnModel> list = new();
 
-        using (SqlConnection connection = new SqlConnection(DBConnModel.ConnectionString))
+        using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
         {
             connection.Open();
-            string sql = $"SELECT * FROM sys.databases";
+            string sql = $"SELECT * FROM sys.tables";
             using (SqlCommand cmd = new SqlCommand(sql, connection))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -55,16 +55,37 @@ public class DBConn
                         };
                         list.Add(dbConnModel);
                     }
-                   
                 }
                 connection.Close();
             }
             return list;
         }
-
     }
-        
-    
+
+    public List<DBConnModel> ReadTable(DBConnModel dbConnModel)
+    {
+        List<DBConnModel> list = new();
+        using (SqlConnection connection = new(_dbConnModel.ConnectionString))
+        {
+            connection.Open();
+            string sql = $"SELECT * FROM {dbConnModel.DBName}";
+            using (SqlCommand cmd = new(sql, connection))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.KeyInfo))
+                {
+                  while (reader.Read())
+                    {
+                        DBConnModel dBConnModelList = new()
+                        {
+                            TableName = reader.GetString(reader.GetOrdinal("name"))
+                        };
+                    }
+                }
+                connection.Close();
+            }
+        }
+        return list;
+    }    
 }
 
 

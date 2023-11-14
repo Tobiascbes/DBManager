@@ -31,23 +31,35 @@
     <table class="table">
         <thead>
             <tr>
-                <th>@modelList.DBName</th>
+                <details>
+                    <summary> @modelList.DBName </summary>
+                    @foreach (DBConnModel table in tableList)
+                    {
+                        <tr>
+                            <td> @table.TableName </td>
+                        </tr>
+                    }
+                </details>
+                
             </tr>
         </thead>
     </table>
 }
 
-<p>There is no database</p>
-
-
 @code {
     List<DBConnModel> dbLists = new();
+    List<DBConnModel> tableList = new();
 
-    public string ConnectionString { get; set; }
+    public string? ConnectionString { get; set; }
 
     public void OnClickMethod()
     {
-        DBConnModel.ConnectionString = ConnectionString;
+        dbConnModel.ConnectionString = ConnectionString;
         dbLists = dbConn.Read();
+    }
+
+    public void ReadTable()
+    {
+        tableList = dbConn.ReadTable(dbConnModel);
     }
 }
