@@ -1,8 +1,5 @@
 ﻿using DatabaseHandler.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Data.Common;
 using System.Data.SqlClient;
-using System.Security.Cryptography.X509Certificates;
 
 
 namespace DatabaseHandler.Data;
@@ -23,8 +20,7 @@ public class DBConn
             Console.WriteLine("Connection Opened Successfully");
             {
                 connection.Open();
-
-                string sql = $"CREATE DATABASE {_dbConnModel.DBName}";
+                string sql = $"CREATE DATABASE {_dbConnModel.TableName}";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
@@ -38,7 +34,6 @@ public class DBConn
     public List<DBConnModel> Read()
     {
         List<DBConnModel> list = new();
-
         using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
         {
             connection.Open();
@@ -49,44 +44,49 @@ public class DBConn
                 {
                     while (reader.Read())
                     {
-                        DBConnModel dbConnModel = new()
-                        {
-                            DBName = reader.GetString(reader.GetOrdinal("name"))
-                        };
-                        list.Add(dbConnModel);
-                    }
-                }
-                connection.Close();
-            }
-            return list;
-        }
-    }
-
-    public List<DBConnModel> ReadTable(DBConnModel dbConnModel)
-    {
-        List<DBConnModel> list = new();
-        using (SqlConnection connection = new(_dbConnModel.ConnectionString))
-        {
-            connection.Open();
-            string sql = $"SELECT * FROM {dbConnModel.DBName}";
-            using (SqlCommand cmd = new(sql, connection))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.KeyInfo))
-                {
-                  while (reader.Read())
-                    {
-                        DBConnModel dBConnModelList = new()
+                        DBConnModel dbTableModel = new()
                         {
                             TableName = reader.GetString(reader.GetOrdinal("name"))
                         };
+                        list.Add(dbTableModel);
                     }
                 }
-                connection.Close();
             }
+            connection.Close();
         }
         return list;
-    }    
+    }
+
+    public List<DBConnModel> GetAllRecords(List<DBConnModel> dbConnList)
+    {
+        List<DBConnModel> records = new();
+        using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
+        {
+            connection.Open();
+            foreach (var item in dbConnList)
+            {
+                string sql = $"SELECT * FROM {item.TableName}";
+
+                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        DBConnModel record = new DBConnModel();
+                        record.TableName = item.TableName;
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            string ColumnName = reader.GetName(i);
+                            object RowValue = reader.GetValue(i);
+
+                            record.ColumnName.Add(ColumnName);
+                            record.RowValue.Add(RowValue);
+                        }
+                        records.Add(record);
+                    }
+                }
+            }
+            return records;
+        }
+    }
 }
-
-
-

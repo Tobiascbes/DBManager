@@ -26,21 +26,35 @@
 
 
 
-@foreach (DBConnModel modelList in dbLists)
+@foreach (var group in Records.GroupBy(r => r.TableName))
 {
     <table class="table">
         <thead>
             <tr>
                 <details>
-                    <summary> @modelList.DBName </summary>
-                    @foreach (DBConnModel table in tableList)
-                    {
-                        <tr>
-                            <td> @table.TableName </td>
-                        </tr>
-                    }
+                    <summary>@group.Key</summary>
+                    <table>
+                        <thead>
+                            <tr>
+                                @foreach (var columnName in group.First().ColumnName)
+                                {
+                                    <th>@columnName</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var record in group)
+                            {
+                                <tr>
+                                    @foreach (var value in record.RowValue)
+                                    {
+                                        <td>@value.ToString()</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </details>
-                
             </tr>
         </thead>
     </table>
@@ -48,18 +62,19 @@
 
 @code {
     List<DBConnModel> dbLists = new();
-    List<DBConnModel> tableList = new();
-
+    List<DBConnModel> Records;
+    
     public string? ConnectionString { get; set; }
 
     public void OnClickMethod()
     {
         dbConnModel.ConnectionString = ConnectionString;
         dbLists = dbConn.Read();
+        ReadTable();
     }
 
     public void ReadTable()
     {
-        tableList = dbConn.ReadTable(dbConnModel);
+        Records = dbConn.GetAllRecords(dbLists);
     }
 }
