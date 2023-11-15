@@ -35,7 +35,7 @@
                     <summary>@group.Key</summary>
                     <table>
                         <thead>
-                            <tr>
+                            <tr class="columnNames">
                                 @foreach (var columnName in group.First().ColumnName)
                                 {
                                     <th>@columnName</th>
@@ -45,7 +45,7 @@
                         <tbody>
                             @foreach (var record in group)
                             {
-                                <tr>
+                                <tr class="rowValues">
                                     @foreach (var value in record.RowValue)
                                     {
                                         <td>@value.ToString()</td>
@@ -59,6 +59,7 @@
         </thead>
     </table>
 }
+
 
 @code {
     List<DBConnModel> dbLists = new();

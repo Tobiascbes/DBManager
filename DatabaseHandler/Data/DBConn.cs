@@ -17,14 +17,12 @@ public class DBConn
         using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
         {
             connection.Open();
-            Console.WriteLine("Connection Opened Successfully");
             {
                 connection.Open();
                 string sql = $"CREATE DATABASE {_dbConnModel.TableName}";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
-                    Console.WriteLine("Database Created Successfully");
                 }
                 connection.Close();
             }
