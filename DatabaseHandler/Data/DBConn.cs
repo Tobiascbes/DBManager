@@ -1,5 +1,6 @@
 ﻿using DatabaseHandler.Models;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+
 
 
 namespace DatabaseHandler.Data;
