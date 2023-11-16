@@ -60,12 +60,28 @@
     </table>
 }
 
+<div>
+    <h4>Add a New Database</h4>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" @bind="DatabaseTable">
+    </div>
+    <div class="form-group">
+        <label for="DatabaseQuery">Database Query</label>
+        <input type="text" style="resize:none; overflow:auto; width:250px; height:100px;" class="form-control" id="database" width="" @bind="Query"></input>
+    </div>
+    <button class="btn btn-primary" @onclick="CreateDatabase">Add Database</button>
+
+</div>
+
 
 @code {
     List<DBConnModel> dbLists = new();
     List<DBConnModel> Records = new();
-    
+
     public string? ConnectionString { get; set; }
+    public string? DatabaseTable { get; set; }
+    public string? Query { get; set; }
 
     public void OnClickMethod()
     {
@@ -77,5 +93,10 @@
     public void ReadTable()
     {
         Records = dbConn.GetAllRecords(dbLists);
+    }
+    public void CreateDatabase()
+    {
+        dbConn.Create(ConnectionString, Query, DatabaseTable);
+        ReadTable();
     }
 }

@@ -9,4 +9,7 @@ public class DBConnModel
     //Tables:
     public List<string> ColumnName { get; set;} = new();
     public List<object> RowValue { get; set; } = new();
+
+    //Queries:
+    public string? Query { get; set; }
 }

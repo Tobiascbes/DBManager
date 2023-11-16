@@ -13,14 +13,13 @@ public class DBConn
         _dbConnModel = dbConnModel;
     }
 
-    public void Create()
+    public void Create(string connString, string QueryString, string TableString)
     {
-        using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
+        using (SqlConnection connection = new SqlConnection(connString))
         {
             connection.Open();
             {
-                connection.Open();
-                string sql = $"CREATE DATABASE {_dbConnModel.TableName}";
+                string sql = $"CREATE TABLE {TableString}({QueryString});";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
