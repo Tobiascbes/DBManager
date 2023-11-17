@@ -56,16 +56,11 @@
 
 <div class="createSection">
     <h4>Add a New Database</h4>
-    <div class="nameBox">
-        <label for="name">Name</label> <br />
-        <input type="text" class="formControl" id="name" @bind="DatabaseTable">
-    </div>
     <div class="queryBox">
         <label for="DatabaseQuery">Database Query</label> <br />
         <input type="text" style="resize:both; overflow:auto; width:500px; height:100px;" class="form-control" id="database" width="" @bind="Query"></input>
     </div>
     <button class="btn btn-primary" @onclick="CreateSqlCommand">Add Database</button>
-
 </div>
 
 @code {
