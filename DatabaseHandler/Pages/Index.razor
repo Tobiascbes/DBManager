@@ -4,7 +4,7 @@
 @using DatabaseHandler.Models
 @inject DBConn dbConn
 @inject DBConnModel dbConnModel
-<h1>Database</h1>
+<h1 class="headline">Database</h1>
 
 
 <div class="dbstring">
@@ -16,64 +16,57 @@
 </div>
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>name</th>
-        </tr>
-    </thead>
-</table>
 
 
-
-@foreach (var group in Records.GroupBy(r => r.TableName))
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <details>
-                    <summary>@group.Key</summary>
-                    <table>
-                        <thead>
-                            <tr class="columnNames">
-                                @foreach (var columnName in group.First().ColumnName)
-                                {
-                                    <th>@columnName</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var record in group)
-                            {
-                                <tr class="rowValues">
-                                    @foreach (var value in record.RowValue)
+<div class="tableLoop">
+    @foreach (var group in Records.GroupBy(r => r.TableName))
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <details>
+                        <summary>@group.Key</summary>
+                        <table>
+                            <thead>
+                                <tr class="columnName">
+                                    @foreach (var columnName in group.First().ColumnName)
                                     {
-                                        <td>@value.ToString()</td>
+                                        <th class="testColumn">@columnName</th>
                                     }
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </details>
-            </tr>
-        </thead>
-    </table>
-}
+                            </thead>
+                            <tbody>
+                                @foreach (var record in group)
+                                {
+                                    <tr class="rowValue">
+                                        @foreach (var value in record.RowValue)
+                                        {
+                                            <td class="testRow">@value.ToString()</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </details>
+                </tr>
+            </thead>
+        </table>
+    }
+</div>
 
-<div>
+<div class="createSection">
     <h4>Add a New Database</h4>
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" @bind="DatabaseTable">
+    <div class="nameBox">
+        <label for="name">Name</label> <br />
+        <input type="text" class="formControl" id="name" @bind="DatabaseTable">
     </div>
-    <div class="form-group">
-        <label for="DatabaseQuery">Database Query</label>
-        <input type="text" style="resize:none; overflow:auto; width:250px; height:100px;" class="form-control" id="database" width="" @bind="Query"></input>
+    <div class="queryBox">
+        <label for="DatabaseQuery">Database Query</label> <br />
+        <input type="text" style="resize:both; overflow:auto; width:500px; height:100px;" class="form-control" id="database" width="" @bind="Query"></input>
     </div>
     <button class="btn btn-primary" @onclick="CreateDatabase">Add Database</button>
 
 </div>
-
 
 @code {
     List<DBConnModel> dbLists = new();
