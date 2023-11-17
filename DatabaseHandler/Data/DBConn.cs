@@ -13,13 +13,13 @@ public class DBConn
         _dbConnModel = dbConnModel;
     }
 
-    public void Create(string connString, string QueryString, string TableString)
+    public void SqlCommand(string connString, string QueryString, string TableString)
     {
         using (SqlConnection connection = new SqlConnection(connString))
         {
             connection.Open();
             {
-                string sql = $"CREATE TABLE {TableString}({QueryString});";
+                string sql = $"{QueryString}";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
@@ -28,6 +28,8 @@ public class DBConn
             }
         }
     }
+
+
 
     public List<DBConnModel> Read()
     {

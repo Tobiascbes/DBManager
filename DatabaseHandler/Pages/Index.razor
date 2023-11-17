@@ -64,7 +64,7 @@
         <label for="DatabaseQuery">Database Query</label> <br />
         <input type="text" style="resize:both; overflow:auto; width:500px; height:100px;" class="form-control" id="database" width="" @bind="Query"></input>
     </div>
-    <button class="btn btn-primary" @onclick="CreateDatabase">Add Database</button>
+    <button class="btn btn-primary" @onclick="CreateSqlCommand">Add Database</button>
 
 </div>
 
@@ -87,9 +87,9 @@
     {
         Records = dbConn.GetAllRecords(dbLists);
     }
-    public void CreateDatabase()
+    public void CreateSqlCommand()
     {
-        dbConn.Create(ConnectionString, Query, DatabaseTable);
+        dbConn.SqlCommand(ConnectionString, Query, DatabaseTable);
         ReadTable();
     }
 }

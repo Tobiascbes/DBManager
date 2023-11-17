@@ -10,6 +10,8 @@ public class DBConnModel
     public List<string> ColumnName { get; set;} = new();
     public List<object> RowValue { get; set; } = new();
 
-    //Queries:
+    //Queries cmd:
     public string? Query { get; set; }
+    //Queries quick create:
+    public string? VariableName { get; set; }
 }
