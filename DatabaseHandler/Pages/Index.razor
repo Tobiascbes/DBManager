@@ -5,6 +5,7 @@
 @inject DBConn dbConn
 @inject DBConnModel dbConnModel
 <h1 class="headline">Database</h1>
+<p style="font-variant:italic; color: grey;">Disclaimer: Tables with no data won't be displayed</p>
 
 
 <div class="dbstring">
@@ -56,6 +57,42 @@
 
 <div class="createSection">
     <h4>Add a New Database</h4>
+    <label for="createName">Tabel name:</label>
+    <input type="text" @bind="TabelName" />
+
+    @foreach (var i in quickCreateItems)
+    {
+
+        <div class="quickCreate">
+
+            <label for="variableName">Variable name:</label>
+            <input type="text" @bind="@i.VariableName" />
+            <label>Choose a datatype</label>
+            <input type="text" list="dataType" @bind="@i.DataType" />
+            <datalist id="dataType">
+                <option>INT</option>
+                <option>Tiny int</option>
+                <option>Big int</option>
+                <option>Float</option>
+                <option>Char</option>
+                <option>Nvarchar</option>
+                <option>Varchar</option>
+
+                <option>Date</option>
+                <option>Time</option>
+                <option>DateTime</option>
+                <option>DateTimeNow</option>
+                <option><input type="text" placeholder="Custom"></option>
+            </datalist>
+            <label>Value for datatype</label>
+            <input type="text" @bind="@i.Value" / placeholder="Empty if no value is needed">
+        </div>
+    }
+    <button class="btn btn-primary" @onclick="QuickCreate">Create</button>
+    <button class="btn btn-primary" @onclick="Increment">New Line</button>
+    <button class="btn btn-primary" @onclick="Decrease">remove line</button>
+
+
     <div class="queryBox">
         <label for="DatabaseQuery">Database Query</label> <br />
         <input type="text" style="resize:both; overflow:auto; width:500px; height:100px;" class="form-control" id="database" width="" @bind="Query"></input>
@@ -71,6 +108,16 @@
     public string? DatabaseTable { get; set; }
     public string? Query { get; set; }
 
+    public string? TabelName { get; set; }
+
+
+    List<QuickCreateItem> quickCreateItems = new List<QuickCreateItem> { new QuickCreateItem() };
+    public class QuickCreateItem
+    {
+        public string? VariableName { get; set; }
+        public string? DataType { get; set; }
+        public string? Value { get; set; }
+    }
     public void OnClickMethod()
     {
         dbConnModel.ConnectionString = ConnectionString;
@@ -86,5 +133,30 @@
     {
         dbConn.SqlCommand(ConnectionString, Query, DatabaseTable);
         ReadTable();
+    }
+    public void QuickCreate()
+    {
+        List<string> localList = new List<string>();
+        foreach (var item in quickCreateItems)
+        {
+            localList.Add($"{item.VariableName} {item.DataType} {item.Value}");
+        }
+        dbConn.Create(TabelName, localList);
+        ReadTable();
+    }
+
+    int count = 1;
+    void Increment()
+    {
+        quickCreateItems.Add(new QuickCreateItem());
+        count++;
+    }
+    void Decrease()
+    {
+        if (count > 1)
+        {
+            quickCreateItems.RemoveAt(count - 1);
+            count--;
+        }
     }
 }

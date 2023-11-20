@@ -29,7 +29,22 @@ public class DBConn
         }
     }
 
+    public void Create(string TabelName, List<string> columnDetails)
+    {
 
+        using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
+        {
+            connection.Open();
+            {
+                string sql = $"CREATE TABLE {TabelName} ({string.Join(",", columnDetails)})";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+    }
 
     public List<DBConnModel> Read()
     {
