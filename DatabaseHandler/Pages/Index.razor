@@ -27,12 +27,14 @@
                 <tr>
                     <details>
                         <summary>@group.Key</summary>
+                        <button @onclick="()=> DropTable(group.Key)" class="deleteTable">DELETE</button>
                         <table>
                             <thead>
                                 <tr class="columnName">
                                     @foreach (var columnName in group.First().ColumnName)
                                     {
                                         <th class="testColumn">@columnName</th>
+                                       
                                     }
                                 </tr>
                             </thead>
@@ -58,7 +60,7 @@
 <div class="createSection">
     <h4>Add a New Database</h4>
     <label for="createName">Tabel name:</label>
-    <input type="text" @bind="TabelName" />
+    <input type="text" @bind="TableName" />
 
     @foreach (var i in quickCreateItems)
     {
@@ -108,7 +110,7 @@
     public string? DatabaseTable { get; set; }
     public string? Query { get; set; }
 
-    public string? TabelName { get; set; }
+    public string? TableName { get; set; }
 
 
     List<QuickCreateItem> quickCreateItems = new List<QuickCreateItem> { new QuickCreateItem() };
@@ -121,28 +123,29 @@
     public void OnClickMethod()
     {
         dbConnModel.ConnectionString = ConnectionString;
-        dbLists = dbConn.Read();
-        ReadTable();
+        dbLists = dbConn.GetTableNames();
+        ReadTableName();
     }
 
-    public void ReadTable()
+    public void ReadTableName()
     {
-        Records = dbConn.GetAllRecords(dbLists);
+        dbLists = dbConn.GetTableNames();
+        Records = dbConn.GetTableContents(dbLists);
     }
     public void CreateSqlCommand()
     {
         dbConn.SqlCommand(ConnectionString, Query, DatabaseTable);
-        ReadTable();
+        ReadTableName();
     }
     public void QuickCreate()
     {
         List<string> localList = new List<string>();
         foreach (var item in quickCreateItems)
         {
-            localList.Add($"{item.VariableName} {item.DataType} {item.Value}");
+            localList.Add($"[{item.VariableName}]  {item.DataType} {item.Value}");
         }
-        dbConn.Create(TabelName, localList);
-        ReadTable();
+        dbConn.Create(TableName, localList);
+        ReadTableName();
     }
 
     int count = 1;
@@ -158,5 +161,11 @@
             quickCreateItems.RemoveAt(count - 1);
             count--;
         }
+    }
+
+    public void DropTable(string? DropTableName)
+    {
+        dbConn.Drop(DropTableName);
+        ReadTableName();
     }
 }

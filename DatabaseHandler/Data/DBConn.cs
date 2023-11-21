@@ -36,7 +36,7 @@ public class DBConn
         {
             connection.Open();
             {
-                string sql = $"CREATE TABLE {TabelName} ({string.Join(",", columnDetails)})";
+                string sql = $"CREATE TABLE [{TabelName}] ({string.Join(",", columnDetails)})";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
@@ -46,7 +46,7 @@ public class DBConn
         }
     }
 
-    public List<DBConnModel> Read()
+    public List<DBConnModel> GetTableNames()
     {
         List<DBConnModel> list = new();
         using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
@@ -72,7 +72,7 @@ public class DBConn
         return list;
     }
 
-    public List<DBConnModel> GetAllRecords(List<DBConnModel> dbConnList)
+    public List<DBConnModel> GetTableContents(List<DBConnModel> dbConnList)
     {
         List<DBConnModel> records = new();
         using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
@@ -102,6 +102,23 @@ public class DBConn
                 }
             }
             return records;
+        }
+    }
+    
+    public void Drop(string TableName)
+    {
+        using (SqlConnection connection = new SqlConnection(_dbConnModel.ConnectionString))
+        {
+            connection.Open();
+            {
+                string sql = $"DROP TABLE {TableName};";
+                using (SqlCommand cmd = new(sql, connection))
+                {
+                    Console.WriteLine(sql);
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            };
         }
     }
 }
